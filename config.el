@@ -17,6 +17,67 @@
 (setq +doom-dashboard-banner-file "logo.png"
       +doom-dashboard-banner-dir "~/.doom.d/")
 
+(setq-default
+ delete-by-moving-to-trash t              ; Delete files to trash
+ tab-width 2                              ; Set width for tabs
+ uniquify-buffer-name-style 'forward      ; Uniquify buffer names
+ window-combination-resize t              ; take new window space from all other windows (not just current)
+ x-stretch-cursor t)                      ; Stretch cursor to the glyph width
+
+(setq undo-limit 80000000                 ; Raise undo-limit to 80Mb
+      evil-want-fine-undo t               ; By default while in insert all changes are one big blob. Be more granular
+      inhibit-compacting-font-caches t    ; When there are lots of glyphs, keep them in memory
+      truncate-string-ellipsis "…")       ; Unicode ellispis are nicer than "...", and also save /precious/ space
+
+(delete-selection-mode 1)                 ; Replace selection when inserting text
+;(display-time-mode 1)                    ; Enable time in the mode-line
+;(setq line-spacing 0.3)                  ; seems like a nice line spacing balance.
+
+(if (eq initial-window-system 'x)         ; if started by emacs command or desktop file
+    (toggle-frame-maximized)
+  (toggle-frame-fullscreen))
+
+;; the following code allows me to choose which buffer I want to see when I split a window.
+;; It first does a split to the right, and then opens Ivy and and shows me a preview
+
+(setq evil-vsplit-window-right t
+      evil-split-window-below t)
+(defadvice! prompt-for-buffer (&rest _)
+  :after '(evil-window-split evil-window-vsplit)
+  (+ivy/switch-buffer))
+(setq +ivy-buffer-preview t)
+
+
+;; Clojure Dev Tweaks
+(setq lsp-lens-enable t)
+
+;; (use-package! cider
+;;   :after clojure-mode
+;;   :config
+;;   (set-lookup-handlers! 'cider-mode nil))
+
+(use-package! clj-refactor
+  :after clojure-mode
+  :config
+  (set-lookup-handlers! 'clj-refactor-mode nil))
+
+(setq lsp-treemacs-sync-mode 1)
+
+;; Hoplon Emacs Config Changes
+(add-to-list 'auto-mode-alist '("\\.cljs\\.hl\\'" . clojurescript-mode))
+
+(add-hook 'clojure-mode-hook
+            '(lambda ()
+               ;; Hoplon functions and macros
+               (dolist (pair '((page . 'defun)
+                               (loop-tpl . 'defun)
+                               (if-tpl . '1)
+                               (for-tpl . '1)
+                               (case-tpl . '1)
+                               (cond-tpl . 'defun)))
+                 (put-clojure-indent (car pair)
+                                     (car (last pair))))))
+
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
 ;;
