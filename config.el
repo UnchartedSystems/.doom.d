@@ -1,27 +1,69 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
-
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Daniel Whitaker"
       user-mail-address "Dan@uncharted.systems")
 
-(setq
- doom-font (font-spec :size 16)
- doom-big-font (font-spec :size 30)
- doom-variable-pitch-font (font-spec :size 15))
-
 (setq +doom-dashboard-banner-file "logo.png"
       +doom-dashboard-banner-dir "~/.doom.d/")
 
+(setq confirm-kill-emacs nil)
+
+;; Choice between standard font and custom font per system
+;; (setq
+;;  doom-font (font-spec :size 16)
+;;  doom-big-font (font-spec :size 30)
+;;  doom-variable-pitch-font (font-spec :size 15))
+(setq doom-font (font-spec :family "." :size 16 :weight 'semi-light))
+
+;; Cider & LSP
+(setq lsp-lens-enable t)
+(setq cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow")
+(setq lsp-ui-doc-enable t)
+(setq lsp-ui-doc-show-with-cursor t)
+(setq lsp-ui-doc-show-with-mouse nil)
+(setq lsp-lens-enable t)
+(setq lsp-ui-sideline-enable t)
+(setq lsp-ui-sideline-show-code-actions t)
+(setq lsp-ui-sideline-enable t)
+(setq lsp-modeline-code-actions-enable t)
+
+;; (use-package! cider
+;;   :after clojure-mode
+;;   :config
+;;   (set-lookup-handlers! 'cider-mode nil))
+
+(use-package! clj-refactor
+  :after clojure-mode
+  :config
+  (set-lookup-handlers! 'clj-refactor-mode nil))
+;; Hoplon
+
+(add-to-list 'auto-mode-alist '("\\.cljs\\.hl\\'"  clojurescript-mode))
+
+(add-hook 'clojure-mode-hook
+          '(lambda ()
+             ;; Hoplon functions and macros
+             (dolist (pair '((page . 'defun)
+                             (loop-tpl . 'defun)
+                             (if-tpl . '1)
+                             (for-tpl . '1)
+                             (case-tpl . '1)
+                             (cond-tpl . 'defun)))
+               (put-clojure-indent (car pair)
+                                   (car (last pair))))))
+
+;; Rust & LSP
+(setq rustic-lsp-server 'rust-analyzer)
+(setq lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer"))
+
+
 (setq-default
- delete-by-moving-to-trash t              ; Delete files to trash
- tab-width 2                              ; Set width for tabs
- uniquify-buffer-name-style 'forward      ; Uniquify buffer names
- window-combination-resize t              ; take new window space from all other windows (not just current)
+ delete-by-moving-to-trash t            ; Delete files to trash
+ tab-width 2                            ; Set width for tabs
+ uniquify-buffer-name-style 'forward    ; Uniquify buffer names
+ window-combination-resize t ; take new window space from all other windows (not just current)
  x-stretch-cursor t)                      ; Stretch cursor to the glyph width
 
 (setq undo-limit 80000000                 ; Raise undo-limit to 80Mb
@@ -47,36 +89,8 @@
   (+ivy/switch-buffer))
 (setq +ivy-buffer-preview t)
 
-
-;; Clojure Dev Tweaks
-(setq lsp-lens-enable t)
-
-;; (use-package! cider
-;;   :after clojure-mode
-;;   :config
-;;   (set-lookup-handlers! 'cider-mode nil))
-
-(use-package! clj-refactor
-  :after clojure-mode
-  :config
-  (set-lookup-handlers! 'clj-refactor-mode nil))
-
 (setq lsp-treemacs-sync-mode 1)
 
-;; Hoplon Emacs Config Changes
-(add-to-list 'auto-mode-alist '("\\.cljs\\.hl\\'" . clojurescript-mode))
-
-(add-hook 'clojure-mode-hook
-            '(lambda ()
-               ;; Hoplon functions and macros
-               (dolist (pair '((page . 'defun)
-                               (loop-tpl . 'defun)
-                               (if-tpl . '1)
-                               (for-tpl . '1)
-                               (case-tpl . '1)
-                               (cond-tpl . 'defun)))
-                 (put-clojure-indent (car pair)
-                                     (car (last pair))))))
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
