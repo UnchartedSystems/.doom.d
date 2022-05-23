@@ -10,9 +10,9 @@
       user-mail-address "Dan@uncharted.systems")
 
 (setq
- doom-font (font-spec :family "SF Mono" :size 16)
- doom-big-font (font-spec :family "SF Mono" :size 30)
- doom-variable-pitch-font (font-spec :family "Avenir Next" :size 15))
+ doom-font (font-spec :size 16)
+ doom-big-font (font-spec :size 30)
+ doom-variable-pitch-font (font-spec :size 15))
 
 (setq +doom-dashboard-banner-file "logo.png"
       +doom-dashboard-banner-dir "~/.doom.d/")
