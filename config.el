@@ -12,35 +12,49 @@
 
 ;; Choice between standard font and custom font per system
 ;; (setq
-;;  doom-font (font-spec :size 16)
-;;  doom-big-font (font-spec :size 30)
-;;  doom-variable-pitch-font (font-spec :size 15))
-(setq doom-font (font-spec :family "." :size 16 :weight 'semi-light))
+;;  doom-font (font-spec :family "Ubuntu Mono" :size 24)
+;;  doom-big-font (font-spec :family "Ubuntu Mono" :size 36 :style "Bold")
+;;  doom-variable-pitch-font (font-spec :family "Ubuntu Mono" :size 24 :style "Italic"))
+
+(setq
+ doom-font (font-spec :family "Ubuntu Mono" :size 24)
+ doom-variable-pitch-font (font-spec :family "Fira Sans")
+ doom-unicode-font (font-spec :family "Ubuntu Mono" :size 24)
+ doom-big-font (font-spec :family "Ubuntu Mono" :size 36))
+
+;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
+;; are the three important ones:
+;;
+;; + `doom-font'
+;; + `doom-variable-pitch-font'
+;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;;   presentations or streaming.
+;;
+;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
+;; font string. You generally only need these two:
+;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
+;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
 
 ;; Cider & LSP
 (setq lsp-lens-enable t)
-(setq cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow")
 (setq lsp-ui-doc-enable t)
 (setq lsp-ui-doc-show-with-cursor t)
 (setq lsp-ui-doc-show-with-mouse nil)
-(setq lsp-lens-enable t)
 (setq lsp-ui-sideline-enable t)
 (setq lsp-ui-sideline-show-code-actions t)
-(setq lsp-ui-sideline-enable t)
 (setq lsp-modeline-code-actions-enable t)
 
-;; (use-package! cider
-;;   :after clojure-mode
-;;   :config
-;;   (set-lookup-handlers! 'cider-mode nil))
+
+;; For debugging empty stack traces!
+(setq cider-clojure-cli-global-options "-J-XX:-OmitStackTraceInFastThrow")
+
 
 (use-package! clj-refactor
   :after clojure-mode
   :config
   (set-lookup-handlers! 'clj-refactor-mode nil))
-;; Hoplon
 
-(add-to-list 'auto-mode-alist '("\\.cljs\\.hl\\'"  clojurescript-mode))
+;; Hoplon
 
 (add-hook 'clojure-mode-hook
           '(lambda ()
@@ -56,7 +70,7 @@
 
 ;; Rust & LSP
 (setq rustic-lsp-server 'rust-analyzer)
-(setq lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer"))
+(setq lsp-rust-analyzer-server-command '("~/.bin/rust-analyzer"))
 
 
 (setq-default
@@ -92,23 +106,25 @@
 (setq lsp-treemacs-sync-mode 1)
 
 
-;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
-;; are the three important ones:
-;;
-;; + `doom-font'
-;; + `doom-variable-pitch-font'
-;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;;
-;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-;; font string. You generally only need these two:
-;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
-;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
-
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+
+;; (setq doom-theme 'doom-one)
+(setq doom-theme 'doom-vibrant)
+(custom-set-faces!
+  '(doom-modeline-buffer-modified :foreground "orange"))
+
+;; LF UTF-8 is the default file encoding, and thus not worth noting in the modeline.
+;; Let’s conditionally hide it.
+;;
+(defun doom-modeline-conditional-buffer-encoding ()
+  "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
+  (setq-local doom-modeline-buffer-encoding
+              (unless (and (memq (plist-get (coding-system-plist buffer-file-coding-system) :category)
+                                 '(coding-category-undecided coding-category-utf-8))
+                           (not (memq (coding-system-eol-type buffer-file-coding-system) '(1 2))))
+                t)))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
