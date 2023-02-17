@@ -40,11 +40,11 @@
 ;; Language Server Protocol (LSP) Options
 
 (setq lsp-treemacs-sync-mode 1)
-;; (setq lsp-lens-enable t)
-;; (setq lsp-ui-doc-enable t)
+(setq lsp-lens-enable t)
+ (setq lsp-ui-doc-enable t)
 ;; (setq lsp-ui-doc-show-with-cursor t)
 ;; (setq lsp-ui-doc-show-with-mouse nil)
-;; (setq lsp-ui-sideline-enable t)
+(setq lsp-ui-sideline-enable t)
 ;; (setq lsp-ui-sideline-show-code-actions t)
 ;; (setq lsp-modeline-code-actions-enable t)
 
