@@ -49,3 +49,5 @@
 ;(unpin! t)
 
 (package! obsidian)
+(package! olivetti)
+(package! elcord)

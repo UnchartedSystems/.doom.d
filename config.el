@@ -83,6 +83,10 @@
 ;; Activate detection of Obsidian vault
 (global-obsidian-mode t)
 
+;; Discord Rich Presence to stave off discord messages
+(require 'elcord)
+(elcord-mode)
+
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
 ;;
